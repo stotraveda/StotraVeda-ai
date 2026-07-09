@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StotraVeda AI Hub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="chat-main-section">
+            <div class="phone-wrapper">
+                <div class="app-header" id="headerBanner">
+                    <h1 id="panelTitle">❓ Ask StotraVeda AI</h1>
+                    <p id="panelDesc">Your comprehensive guide to Sanatana Dharma</p>
+                </div>
+
+                <div class="chat-stream" id="chatStream">
+                    <div class="bubble guru-msg" id="welcomeMsg">Hari Om! Welcome to StotraVeda AI. Select any specialized engine from the right panel to begin our conversation. How can I guide you today?</div>
+                    
+                    <div class="loading-holder" id="loader">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+
+                <div class="input-footer">
+                    <input type="text" id="userInput" placeholder="Type your query..." onkeydown="if(event.key === 'Enter') handleTransmission()">
+                    <button id="actionBtn" onclick="handleTransmission()">➔</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-sidebar">
+            <div class="sidebar-title">Vedic AI Suite</div>
+            <div class="sidebar-scroll-container" id="sidebarMenu">
+                </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
