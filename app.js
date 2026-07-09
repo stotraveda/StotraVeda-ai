@@ -226,7 +226,10 @@ async function handleTransmission() {
             guruBubble.innerText = coreAnswer;
             stream.insertBefore(guruBubble, loader);
         } else {
-            const errorMsg = data.error || "Worker endpoint connection mismatch.";
+            let errorMsg = "Worker endpoint connection mismatch.";
+            if (data.error) {
+                errorMsg = typeof data.error === 'object' ? (data.error.message || JSON.stringify(data.error)) : data.error;
+            }
             throw new Error(errorMsg);
         }
     } catch (e) {
