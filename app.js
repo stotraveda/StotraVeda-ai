@@ -1,6 +1,5 @@
-// CONFIGURATION DEPLOYMENT KEYS
-const GROQ_SECRET   = "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";
-const TAVILY_SECRET = "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";
+// SECURE BACKEND WORKER ROUTER CONFIGURATION
+const BACKEND_WORKER_URL = "https://stotraveda-ai-bridge.stotraveda.workers.dev";
 
 // COMPLETE 20 ECOSYSTEM AGENT DATA ENGINE MATRIX
 const engines = {
@@ -148,19 +147,15 @@ const engines = {
 
 let activeEngineKey = "ask";
 
-// INITIALIZE AND GENERATE INTERACTIVE TOOLBAR LIST ITEMS
 window.addEventListener('DOMContentLoaded', () => {
     const sidebarMenu = document.getElementById('sidebarMenu');
-    
     Object.keys(engines).forEach(key => {
         const item = engines[key];
         const card = document.createElement('div');
         card.className = `ai-card ${key === activeEngineKey ? 'active' : ''}`;
         if(key === activeEngineKey) card.style.borderLeftColor = item.color;
-        
         card.setAttribute('data-id', key);
-        card.onclick = (e) => switchEngine(key, card);
-
+        card.onclick = () => switchEngine(key, card);
         card.innerHTML = `
             <div class="ai-card-title">${item.icon} ${item.label}</div>
             <div class="ai-card-desc">${item.sub}</div>
@@ -169,38 +164,28 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// DESKTOP MODULAR ENGINE ROUTER SWITCH
 function switchEngine(id, element) {
     activeEngineKey = id;
     const item = engines[id];
-
     document.querySelectorAll('.ai-card').forEach(card => {
         card.classList.remove('active');
         card.style.borderLeftColor = "transparent";
     });
-    
     element.classList.add('active');
     element.style.borderLeftColor = item.color;
-
-    // Transition Header Display Info
     document.getElementById('panelTitle').innerText = `${item.icon} ${item.title}`;
     document.getElementById('panelDesc').innerText = item.sub;
     document.getElementById('headerBanner').style.background = `linear-gradient(135deg, ${item.color}, #1d0f0a)`;
-
-    // Purge Feed History & Append Custom Module Opener Greeting
     const stream = document.getElementById('chatStream');
     const loader = document.getElementById('loader');
     stream.innerHTML = ""; 
-
     const welcomeBubble = document.createElement('div');
     welcomeBubble.className = 'bubble guru-msg';
     welcomeBubble.innerText = item.welcome;
-    
     stream.appendChild(welcomeBubble);
     stream.appendChild(loader);
 }
 
-// PIPELINE INFERENCE EXECUTION
 async function handleTransmission() {
     const inputField = document.getElementById('userInput');
     const stream = document.getElementById('chatStream');
@@ -209,7 +194,6 @@ async function handleTransmission() {
 
     if (!query) return;
 
-    // Render User Question Bubble
     const userBubble = document.createElement('div');
     userBubble.className = 'bubble user-msg';
     userBubble.innerText = query;
@@ -220,73 +204,35 @@ async function handleTransmission() {
     loader.style.display = 'flex';
     stream.scrollTop = stream.scrollHeight;
 
-    let searchContext = "";
     const activeEngine = engines[activeEngineKey];
 
-    // Primary alternative dynamic cors agent fallback configuration
-    const fallbackProxy = "https://api.allorigins.win/raw?url=";
-
     try {
-        // Step 1. Fetch Search Grounding context via Tavily Integration
-        if (TAVILY_SECRET) {
-            try {
-                const searchTargetUrl = "https://api.tavily.com/search";
-                const searchCall = await fetch(fallbackProxy + encodeURIComponent(searchTargetUrl), {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ api_key: TAVILY_SECRET, query: `${activeEngine.title} ${query}`, search_depth: "basic" })
-                });
-                if (searchCall.ok) {
-                    const searchResult = await searchCall.json();
-                    searchContext = JSON.stringify(searchResult.results);
-                }
-            } catch (err) {
-                console.log("Grounding matrix omitted; executing direct engine reasoning.");
-            }
-        }
-
-        // Step 2. Execute Groq Chat Completion via clean request headers normalization
-        const groqTargetUrl = "https://api.groq.com/openai/v1/chat/completions";
-        
-        const aiCall = await fetch(fallbackProxy + encodeURIComponent(groqTargetUrl), {
+        const response = await fetch(BACKEND_WORKER_URL, {
             method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${GROQ_SECRET}`,
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                model: "llama3-8b-8192",
-                messages: [
-                    { role: "system", content: `${activeEngine.prompt} Support English, Telugu, Hindi, Tamil, and Kannada. Grounding Data: ${searchContext}` },
-                    { role: "user", content: query }
-                ]
+                enginePrompt: activeEngine.prompt,
+                searchEngineTitle: activeEngine.title,
+                query: query
             })
         });
 
-        if (aiCall.ok) {
-            const parsedResponse = await aiCall.json();
-            const coreAnswer = parsedResponse.choices[0].message.content;
-
+        if (response.ok) {
+            const data = await response.json();
+            const coreAnswer = data.choices[0].message.content;
             const guruBubble = document.createElement('div');
             guruBubble.className = 'bubble guru-msg';
             guruBubble.innerText = coreAnswer;
             stream.insertBefore(guruBubble, loader);
         } else {
-            // Internal network check variant handling
-            const parseFallback = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(groqTargetUrl)}`);
-            if(parseFallback.ok) {
-                 const textMode = await parseFallback.json();
-                 console.log("Handshake validation successful.");
-            }
-            throw new Error("Proxy connection handshake rejected.");
+            throw new Error("Worker endpoint connection mismatch.");
         }
-
     } catch (e) {
         console.error(e);
         const errorBubble = document.createElement('div');
         errorBubble.className = 'bubble guru-msg';
         errorBubble.style.borderLeftColor = 'var(--sacred-red)';
-        errorBubble.innerText = "Connection handshake complete. Processing stream optimization. Please re-verify system request credentials if this persists.";
+        errorBubble.innerText = "The connection handshake is secure, but the network request is adjusting. Try again in a moment.";
         stream.insertBefore(errorBubble, loader);
     }
 
