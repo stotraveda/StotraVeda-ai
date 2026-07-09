@@ -224,23 +224,26 @@ async function handleTransmission() {
     const activeEngine = engines[activeEngineKey];
 
     try {
-        // Step 1. Fetch Real-time Search Grounding via Tavily over Proxy
+        // Step 1. Fetch Search Grounding context via Proxy (Tavily supports CORS over Proxies)
         if (TAVILY_SECRET) {
-            const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent("https://api.tavily.com/search");
-            const searchCall = await fetch(proxyUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ api_key: TAVILY_SECRET, query: `${activeEngine.title} ${query}`, search_depth: "basic" })
-            });
-            if (searchCall.ok) {
-                const searchResult = await searchCall.json();
-                searchContext = JSON.stringify(searchResult.results);
+            try {
+                const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent("https://api.tavily.com/search");
+                const searchCall = await fetch(proxyUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ api_key: TAVILY_SECRET, query: `${activeEngine.title} ${query}`, search_depth: "basic" })
+                });
+                if (searchCall.ok) {
+                    const searchResult = await searchCall.json();
+                    searchContext = JSON.stringify(searchResult.results);
+                }
+            } catch (err) {
+                console.log("Search grounding bypassed.");
             }
         }
 
-        // Step 2. Execute Groq Chat Completion over Proxy
-        const groqProxyUrl = "https://corsproxy.io/?" + encodeURIComponent("https://api.groq.com/openai/v1/chat/completions");
-        const aiCall = await fetch(groqProxyUrl, {
+        // Step 2. Execute Groq Chat Completion (Direct call to bypass corsproxy block headers)
+        const aiCall = await fetch("https://api.groq.com/openai/v1/chat/completions", {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${GROQ_SECRET}`,
@@ -249,7 +252,7 @@ async function handleTransmission() {
             body: JSON.stringify({
                 model: "llama3-8b-8192",
                 messages: [
-                    { role: "system", content: `${activeEngine.prompt} Support English, Telugu, Hindi, Tamil, and Kannada. Use simple bold typography tags where helpful. Grounding Matrix: ${searchContext}` },
+                    { role: "system", content: `${activeEngine.prompt} Support English, Telugu, Hindi, Tamil, and Kannada. Grounding Data: ${searchContext}` },
                     { role: "user", content: query }
                 ]
             })
@@ -264,10 +267,11 @@ async function handleTransmission() {
             guruBubble.innerText = coreAnswer;
             stream.insertBefore(guruBubble, loader);
         } else {
-            throw new Error();
+            throw new Error("API Execution Intercepted");
         }
 
     } catch (e) {
+        console.error(e);
         const errorBubble = document.createElement('div');
         errorBubble.className = 'bubble guru-msg';
         errorBubble.style.borderLeftColor = 'var(--sacred-red)';
