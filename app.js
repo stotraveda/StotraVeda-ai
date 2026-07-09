@@ -217,22 +217,24 @@ async function handleTransmission() {
             })
         });
 
-        if (response.ok) {
-            const data = await response.json();
+        const data = await response.json();
+
+        if (response.ok && data.choices && data.choices[0]) {
             const coreAnswer = data.choices[0].message.content;
             const guruBubble = document.createElement('div');
             guruBubble.className = 'bubble guru-msg';
             guruBubble.innerText = coreAnswer;
             stream.insertBefore(guruBubble, loader);
         } else {
-            throw new Error("Worker endpoint connection mismatch.");
+            const errorMsg = data.error || "Worker endpoint connection mismatch.";
+            throw new Error(errorMsg);
         }
     } catch (e) {
         console.error(e);
         const errorBubble = document.createElement('div');
         errorBubble.className = 'bubble guru-msg';
         errorBubble.style.borderLeftColor = 'var(--sacred-red)';
-        errorBubble.innerText = "The connection handshake is secure, but the network request is adjusting. Try again in a moment.";
+        errorBubble.innerText = `System Status: ${e.message}`;
         stream.insertBefore(errorBubble, loader);
     }
 
