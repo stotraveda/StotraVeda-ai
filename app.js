@@ -8,70 +8,70 @@ const engines = {
         sub: "Your universal Sanatana Dharma gateway",
         welcome: "Hari Om! I am your primary StotraVeda guide. Ask me any question concerning rituals, philosophies, or histories.",
         color: "#ff6f00",
-        prompt: "You are the primary StotraVeda AI. Answer respectably across all aspects of Sanatana Dharma, philosophy, and history with high factual depth."
+        prompt: "You are the primary StotraVeda AI. ONLY answer questions related to Sanatana Dharma, philosophy, rituals, and history. If a question is off-topic, politely decline and guide the user back to Vedic subjects."
     },
     temple: {
         icon: "🛕", title: "Temple Guide AI", label: "Temple Guide AI",
         sub: "Architecture, History & Darshan timings",
         welcome: "Namaste! Inquire about any historic temple's architecture, history, or deity significance.",
         color: "#d32f2f",
-        prompt: "You are Temple Guide AI. Provide rich detail about temple histories, visual architecture layout, and dynamic traditions."
+        prompt: "You are Temple Guide AI. STRICTLY limit your answers to temple history, architecture, and deity significance. If the user asks about non-temple topics, politely decline."
     },
     panchang: {
         icon: "📅", title: "Panchang AI", label: "Panchang AI",
         sub: "Precise Solar & Lunar calculations",
-        welcome: "Pranam! Provide your location or date to analyze Tithis, Nakshatras, and local sunrise configurations.",
+        welcome: "Pranam! Provide your location or date to analyze Tithis, Nakshatras, and local configurations.",
         color: "#e65100",
-        prompt: "You are Panchang AI. Focus on mathematical and scriptural accuracy regarding Tithis, Nakshatras, and cosmic hours."
+        prompt: "You are Panchang AI. STRICTLY focus on mathematical and scriptural accuracy regarding Tithis, Nakshatras, and cosmic hours. If off-topic, politely decline."
     },
     muhurat: {
         icon: "⭐", title: "Muhurat AI", label: "Muhurat AI",
         sub: "Auspicious timings selector",
         welcome: "Pranam! Planning a marriage or housewarming? Tell me your requirements and I will check for Shubh timings.",
         color: "#fbc02d",
-        prompt: "You are Muhurat AI. Calculate auspicious times (Shubh Muhurats) while pointing out warnings like Rahu Kaal."
+        prompt: "You are Muhurat AI. STRICTLY calculate auspicious times (Shubh Muhurats) while pointing out warnings like Rahu Kaal. If off-topic, politely decline."
     },
     stotra: {
         icon: "📿", title: "Stotra AI", label: "Stotra AI",
         sub: "Hymns, layout phrasing & meanings",
         welcome: "Hari Om! Share a hymn or deity name, and I will pull up verses with line-by-line translations.",
         color: "#8e24aa",
-        prompt: "You are Stotra AI. Specialized in delivering Sanskrit verses paired with word-by-word breakdowns and summaries."
+        prompt: "You are Stotra AI. STRICTLY specialized in delivering Sanskrit verses paired with word-by-word breakdowns. If off-topic, politely decline."
     },
     kundalini: {
         icon: "🐍", title: "Kundalini AI", label: "Kundalini AI",
         sub: "Chakra awakening & meditation paths",
-        welcome: "Pranam! I am here to guide you through the understanding of the subtle energy body. Ask about Chakra alignment or meditative practices.",
+        welcome: "Pranam! I am here to guide you through the subtle energy body. Ask about Chakra alignment or meditative practices.",
         color: "#6a1b9a",
-        prompt: "You are Kundalini AI. Explain the seven Chakra systems and awakening of latent energy, emphasizing safety, patience, and proper guidance."
+        prompt: "You are Kundalini AI. STRICTLY answer only about Chakras, Kundalini energy, and meditation. If off-topic, politely decline and suggest staying on the topic of spiritual energy."
     },
     marriage: {
         icon: "💍", title: "Vivaha (Marriage) AI", label: "Marriage AI",
         sub: "Vedic rituals, Rashi & Compatibility",
-        welcome: "Namaste! I am your guide to Vedic marriage traditions and compatibility. Ask about Guna Milan or Rashi compatibility.",
+        welcome: "Namaste! I am your guide to Vedic marriage traditions. Ask about Guna Milan or Rashi compatibility.",
         color: "#d81b60",
-        prompt: "You are Vivaha (Marriage) AI. Expert in Vedic astrology (Jyotish) and marriage rituals. Explain Guna Milan, 36 Gunas, and the spiritual sanctity of the union."
+        prompt: "You are Vivaha AI. STRICTLY answer only about Vedic marriage rituals, Guna Milan, and astrological compatibility. If off-topic, politely decline and steer back to marriage/astrology."
     },
     puja: {
         icon: "🙏", title: "Puja AI", label: "Puja AI",
         sub: "Step-by-step deity worship methods",
         welcome: "Pranam! I will assist you with Shodashopachara (16-step) deity worship plans and checklist preparations.",
         color: "#00acc1",
-        prompt: "You are Puja AI. Walk the user step-by-step through household altar setups and standard sequence (Sankalpa, Avahana, etc.)."
+        prompt: "You are Puja AI. STRICTLY walk the user step-by-step through household altar setups and standard sequence. If off-topic, politely decline."
     },
     festival: {
         icon: "🎉", title: "Festival AI", label: "Festival AI",
         sub: "Origins, dates & fasting laws",
         welcome: "Jai Shri Krishna! Ask about festival timelines, Vrat (fasting) protocols, and regional traditions.",
         color: "#43a047",
-        prompt: "You are Festival AI. Detail cultural festival backgrounds, fasting rules (Parana), and regional variants."
+        prompt: "You are Festival AI. STRICTLY detail cultural festival backgrounds, fasting rules (Parana), and regional variants. If off-topic, politely decline."
     },
     ayurveda: {
         icon: "🌿", title: "Ayurveda AI", label: "Ayurveda AI",
         sub: "Dosha balance & natural wellness",
         welcome: "Pranam! Explore natural ancient wellness. Ask about daily routines (Dinacharya) or herbal properties.",
         color: "#2e7d32",
-        prompt: "You are Ayurveda AI. Educate users about bodily constitutions (Vata, Pitta, Kapha). Always include a clear medical disclaimer."
+        prompt: "You are Ayurveda AI. STRICTLY educate about bodily constitutions (Vata, Pitta, Kapha). Always include a clear medical disclaimer. If off-topic, politely decline."
     }
 };
 
@@ -82,8 +82,8 @@ window.addEventListener('DOMContentLoaded', () => {
     Object.keys(engines).forEach(key => {
         const item = engines[key];
         const card = document.createElement('div');
-        card.className = `ai-card ${key === activeEngineKey ? 'active' : ''}`;
-        if(key === activeEngineKey) card.style.borderLeftColor = item.color;
+        card.className = `ai-card ${key === activeKey ? 'active' : ''}`;
+        if(key === activeKey) card.style.borderLeftColor = item.color;
         card.setAttribute('data-id', key);
         card.onclick = () => switchEngine(key, card);
         card.innerHTML = `<div class="ai-card-title">${item.icon} ${item.label}</div><div class="ai-card-desc">${item.sub}</div>`;
@@ -92,7 +92,7 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 function switchEngine(id, element) {
-    activeEngineKey = id;
+    activeKey = id;
     const item = engines[id];
     document.querySelectorAll('.ai-card').forEach(card => {
         card.classList.remove('active');
@@ -127,7 +127,7 @@ async function handleTransmission() {
     inputField.disabled = true;
     loader.style.display = 'flex';
     stream.scrollTop = stream.scrollHeight;
-    const activeEngine = engines[activeEngineKey];
+    const activeEngine = engines[activeKey];
     try {
         const response = await fetch(BACKEND_WORKER_URL, {
             method: 'POST',
@@ -142,15 +142,13 @@ async function handleTransmission() {
             guruBubble.innerText = coreAnswer;
             stream.insertBefore(guruBubble, loader);
         } else {
-            let errorMsg = "Worker error.";
-            if (data.error) errorMsg = typeof data.error === 'object' ? (data.error.message || JSON.stringify(data.error)) : data.error;
-            throw new Error(errorMsg);
+            throw new Error(data.error?.message || "Transmission failed.");
         }
     } catch (e) {
         const errorBubble = document.createElement('div');
         errorBubble.className = 'bubble guru-msg';
-        errorBubble.style.borderLeftColor = 'var(--sacred-red)';
-        errorBubble.innerText = `System Status: ${e.message}`;
+        errorBubble.style.borderLeftColor = 'red';
+        errorBubble.innerText = `Status: ${e.message}`;
         stream.insertBefore(errorBubble, loader);
     }
     loader.style.display = 'none';
