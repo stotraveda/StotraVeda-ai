@@ -223,12 +223,15 @@ async function handleTransmission() {
     let searchContext = "";
     const activeEngine = engines[activeEngineKey];
 
+    // Universally compatible open proxy configuration wrapper
+    const proxyBase = "https://corsproxy.io/?";
+
     try {
-        // Step 1. Fetch Search Grounding context via Proxy (Tavily supports CORS over Proxies)
+        // Step 1. Fetch Search Grounding context via Proxy
         if (TAVILY_SECRET) {
             try {
-                const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent("https://api.tavily.com/search");
-                const searchCall = await fetch(proxyUrl, {
+                const searchTargetUrl = proxyBase + encodeURIComponent("https://api.tavily.com/search");
+                const searchCall = await fetch(searchTargetUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ api_key: TAVILY_SECRET, query: `${activeEngine.title} ${query}`, search_depth: "basic" })
@@ -238,12 +241,14 @@ async function handleTransmission() {
                     searchContext = JSON.stringify(searchResult.results);
                 }
             } catch (err) {
-                console.log("Search grounding bypassed.");
+                console.log("Search grounding temporarily bypassed.");
             }
         }
 
-        // Step 2. Execute Groq Chat Completion (Direct call to bypass corsproxy block headers)
-        const aiCall = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        // Step 2. Execute Groq Chat Completion via Proxy Integration to handle origin headers properly
+        const groqTargetUrl = proxyBase + encodeURIComponent("https://api.groq.com/openai/v1/chat/completions");
+        
+        const aiCall = await fetch(groqTargetUrl, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${GROQ_SECRET}`,
@@ -267,7 +272,7 @@ async function handleTransmission() {
             guruBubble.innerText = coreAnswer;
             stream.insertBefore(guruBubble, loader);
         } else {
-            throw new Error("API Execution Intercepted");
+            throw new Error("Proxy-negotiation pipeline failure");
         }
 
     } catch (e) {
@@ -275,7 +280,7 @@ async function handleTransmission() {
         const errorBubble = document.createElement('div');
         errorBubble.className = 'bubble guru-msg';
         errorBubble.style.borderLeftColor = 'var(--sacred-red)';
-        errorBubble.innerText = "Connection bridge stabilized. If request limits are reached, check credentials status.";
+        errorBubble.innerText = "Connection handshake failed. Confirm your key status or view console logs.";
         stream.insertBefore(errorBubble, loader);
     }
 
