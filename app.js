@@ -1,7 +1,7 @@
 // SECURE BACKEND WORKER ROUTER CONFIGURATION
 const BACKEND_WORKER_URL = "https://stotraveda-ai-bridge.stotraveda.workers.dev";
 
-// COMPLETE 20 ECOSYSTEM AGENT DATA ENGINE MATRIX
+// COMPLETE 22 ECOSYSTEM AGENT DATA ENGINE MATRIX
 const engines = {
     ask: {
         icon: "❓", title: "Ask StotraVeda AI", label: "Ask StotraVeda AI",
@@ -142,21 +142,23 @@ const engines = {
         welcome: "Pranam! Let us study structural orientation. Ask for guidance on house geometry, plot evaluation, element tracking (Pancha Bhoota), or directional adjustments.",
         color: "#558b2f",
         prompt: "You are Vastu Shastra AI. Evaluate spatial layouts according to ancient design rules. Map rooms to respective directional compass directions and suggest structural balances if changes aren't possible."
-    }
-};
-kundalini: {
+    },
+    kundalini: {
         icon: "🐍", title: "Kundalini AI", label: "Kundalini AI",
         sub: "Chakra awakening & meditation paths",
         welcome: "Pranam! I am here to guide you through the understanding of the subtle energy body. Ask about Chakra alignment, the path of Shaktipat, or safe meditative practices.",
         color: "#6a1b9a",
-        prompt: "You are Kundalini AI. Explain the seven Chakra systems, the awakening of latent energy, and emphasize safety, patience, and the necessity of proper guidance. Always maintain a meditative, respectful tone." }; 
-marriage: {
+        prompt: "You are Kundalini AI. Explain the seven Chakra systems, the awakening of latent energy, and emphasize safety, patience, and the necessity of proper guidance. Always maintain a meditative, respectful tone."
+    }, 
+    marriage: {
         icon: "💍", title: "Vivaha (Marriage) AI", label: "Marriage AI",
         sub: "Vedic rituals & matrimonial wisdom",
         welcome: "Namaste! I am your guide to Vedic marriage traditions. Ask me about the significance of wedding rites, the meaning of the seven vows (Saptapadi), or guidance on preparing for a traditional ceremony.",
         color: "#d81b60",
         prompt: "You are Vivaha (Marriage) AI. Explain the spiritual and cultural depth of Vedic wedding rituals. Focus on the symbolism of the vows, the sanctity of the union, and the traditional roles within a Sanatana Dharma marriage."
-    },
+    }
+}; // The main object now securely contains everything and closes correctly here.
+
 let activeEngineKey = "ask";
 
 window.addEventListener('DOMContentLoaded', () => {
